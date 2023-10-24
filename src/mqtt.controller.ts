@@ -1,8 +1,9 @@
 // mqtt.controller.ts
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as mqtt from 'mqtt';
+import { config } from './config';
 
 import { SensorData } from './sensor-data.entity';
 
@@ -12,7 +13,7 @@ export class MqttController {
     @InjectRepository(SensorData)
     private temperatureDataRepository: Repository<SensorData>,
   ) {
-    const client = mqtt.connect('mqtt://192.168.1.103');
+    const client = mqtt.connect(config.mqtt_server);
     client.subscribe('data');
     client.on('message', (topic, message) => {
       const data = message.toString().split(',');
@@ -23,5 +24,10 @@ export class MqttController {
       temperatureData.timestamp = new Date();
       this.temperatureDataRepository.save(temperatureData);
     });
+  }
+
+  @Get('/getAll')
+  async getAllLedStatus(): Promise<SensorData[]> {
+    return this.temperatureDataRepository.find();
   }
 }

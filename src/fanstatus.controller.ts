@@ -1,7 +1,8 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as mqtt from 'mqtt';
+import { config } from './config';
 
 import { FanStatus } from './fanstatus.entity';
 
@@ -11,7 +12,7 @@ export class FanController {
     @InjectRepository(FanStatus)
     private lightStatusRepository: Repository<FanStatus>,
   ) {
-    const client = mqtt.connect('mqtt://192.168.1.103');
+    const client = mqtt.connect(config.mqtt_server);
     client.subscribe('FAN');
     client.on('message', (topic, message) => {
       if (topic === 'FAN') {
@@ -25,5 +26,10 @@ export class FanController {
         this.lightStatusRepository.save(lightStatus);
       }
     });
+  }
+
+  @Get('/getAll')
+  async getAllLedStatus(): Promise<FanStatus[]> {
+    return this.lightStatusRepository.find();
   }
 }
