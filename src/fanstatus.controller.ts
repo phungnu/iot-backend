@@ -19,7 +19,7 @@ export class FanController {
         const status = message.toString();
         console.log(`Received FAN status: ${status}`);
         
-        // Lưu trạng thái đèn vào cơ sở dữ liệu
+        // Lưu trạng thái quạt vào cơ sở dữ liệu
         const lightStatus = new FanStatus();
         lightStatus.status = status;
         lightStatus.timestamp = new Date();

@@ -11,6 +11,7 @@ import { LedController } from './ledstatus.controller';
 import { FanStatus } from './fanstatus.entity';
 import { FanStatusRepository } from './fanstatus.repository';
 import { FanController } from './fanstatus.controller';
+import { MqttService } from './mqtt.service';
 
 @Module({
 	imports: [
@@ -26,6 +27,6 @@ import { FanController } from './fanstatus.controller';
 		TypeOrmModule.forFeature([SensorData, SensorDataRepository, LedStatus, LedStatusRepository, FanStatus, FanStatusRepository])
 	],
 	controllers: [AppController, MqttController, LedController, FanController],
-	providers: [AppService],
+	providers: [AppService, MqttService],
 })
 export class AppModule {}
